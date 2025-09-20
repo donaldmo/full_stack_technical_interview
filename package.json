@@ -1,0 +1,29 @@
+{
+  "name": "full_stack_technical_interview",
+  "version": "1.0.0",
+  "description": "## How to Use 1. **Access the Application**: Open your browser and go to `http://localhost:3000` after starting the server. 2. **Upload Data**: Click the file upload form, pick an Excel (.xlsx) file with `Month` and `Amount` columns, and submit it. 3. **View Dashboard**: After a successful upload, the dashboard will show the data in a table and a bar chart for the specific user and year. 4. **Retrieve Data**: Use the URL `http://localhost:3000/api/finances/userId/year` (e.g., `http://localhost:3000/api/finances/1/2025`) to fetch specific financial records in JSON format.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/donaldmo/full_stack_technical_interview.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/donaldmo/full_stack_technical_interview/issues"
+  },
+  "homepage": "https://github.com/donaldmo/full_stack_technical_interview#readme",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "dotenv": "^17.2.2",
+    "exceljs": "^4.4.0",
+    "express": "^5.1.0",
+    "jest": "^30.1.3",
+    "mysql2": "^3.15.0",
+    "supertest": "^7.1.4"
+  }
+}
