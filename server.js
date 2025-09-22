@@ -10,9 +10,9 @@
  */
 const express = require('express');
 const cors = require('cors');
-const swaggerJsdoc = require('swagger-jsdoc');
-const swaggerUi = require('swagger-ui-express');
-const swaggerOptions = require('./config/swaggerOptions');
+const setupSwagger = require('./utils/swagger');
+const routes = require('./resources/routes');
+const { setup, close } = require('./utils/db/setup-db-connection');
 
 
 require('dotenv').config();
@@ -35,10 +35,7 @@ app.use(cors());
 /**
  * Swagger setup
  */
-
-const swaggerDocs = swaggerJsdoc(swaggerOptions);
-app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocs));
-
+setupSwagger(app);
 
 /**
  * --- ROUTES ---
@@ -66,22 +63,25 @@ app.get('/', (req, res) => {
   res.send('Welcome to the Financial API Server');
 });
 
+routes(app);
 
 /**
  * --- SERVER ---
  * ----------------------------------------------
  */
-
-/**
- * Start the server on port 3000 
- * or the port specified in environment variables.
- */
 const PORT = process.env.PORT || 3000;
-
-
 if (require.main === module) {
-  app.listen(PORT, () => {
+  app.listen(PORT, async () => {
+    await setup();
+
     console.log(`Server is running on PORT:${PORT}`);
+
+    // Graceful shutdown
+    process.on('SIGTERM', async () => {
+      console.log('Shutting down gracefully');
+      await close();
+      process.exit(0);
+    });
   });
 }
 
