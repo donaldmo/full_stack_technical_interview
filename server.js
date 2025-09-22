@@ -10,9 +10,15 @@
  */
 const express = require('express');
 const cors = require('cors');
+const session = require('express-session');
+const cookieParser = require('cookie-parser');
+
 const setupSwagger = require('./utils/swagger');
 const routes = require('./resources/routes');
 const { setup, close } = require('./utils/db/setup-db-connection');
+const authenticate = require('./resources/middleware/auth.middleware');
+
+const { loginController, logoutController } = require('./resources/controllers/users.controller');
 
 
 require('dotenv').config();
@@ -20,22 +26,33 @@ const app = express();
 
 
 /**
- * --- MIDDLEWARE ---
+ * --- MIDDLEWARE SETUP ---
  * ----------------------------------------------
  */
-
 app.use(express.json());
+app.use(cookieParser());
 app.use(express.urlencoded({ extended: true }));
 app.use(cors());
+
+/**
+ * --- SESSION ---
+ * ----------------------------------------------
+ */
+app.use(session({
+  secret: process.env.SESSION_SECRET,
+  resave: false,
+  saveUninitialized: true,
+  cookie: { secure: process.env.NODE_ENV === 'production' }
+}));
 
 /**
  * --- API DOCUMENTATION ---
  * ----------------------------------------------
  */
-/**
- * Swagger setup
- */
 setupSwagger(app);
+/**
+ * TODO: JSDOC
+ */
 
 /**
  * --- ROUTES ---
@@ -62,6 +79,13 @@ setupSwagger(app);
 app.get('/', (req, res) => {
   res.send('Welcome to the Financial API Server');
 });
+
+// Routes
+app.post('/login', loginController);
+app.post('/logout', logoutController);
+
+/** Protected Route */
+app.get('/profile', authenticate)
 
 routes(app);
 
