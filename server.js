@@ -16,10 +16,6 @@ const cookieParser = require('cookie-parser');
 const setupSwagger = require('./utils/swagger');
 const routes = require('./resources/routes');
 const { setup, close } = require('./utils/db/setup-db-connection');
-const authenticate = require('./resources/middleware/auth.middleware');
-
-const { loginController, logoutController } = require('./resources/controllers/users.controller');
-
 
 require('dotenv').config();
 const app = express();
@@ -55,47 +51,12 @@ setupSwagger(app);
  */
 
 /**
- * --- ROUTES ---
- * ----------------------------------------------
+ * --- ROUTES ---\n * ----------------------------------------------
  */
-
-/**
- * GET /
- * @openapi
- * /:
- *   get:
- *     summary: Welcome endpoint for the Financial API Server
- *     description: Returns a welcome message indicating the server is running.
- *     operationId: getWelcome
- *     responses:
- *       200:
- *         description: Welcome message
- *         content:
- *           text/plain:
- *             schema:
- *               type: string
- *               example: Welcome to the Financial API Server
- */
-app.get('/', (req, res) => {
-  res.send('Welcome to the Financial API Server');
-});
-
-// Routes
-app.post('/api/login', loginController);
-app.post('/api/logout', logoutController);
-
-/** Protected Route */
-app.get('/api/profile', authenticate, () => {
-  res.json({
-    message: 'Welcome to your profile!', user: req.user
-  });
-});
-
 routes(app);
 
 /**
- * --- SERVER ---
- * ----------------------------------------------
+ * --- SERVER ---\n * ----------------------------------------------
  */
 const PORT = process.env.PORT || 3000;
 if (require.main === module) {

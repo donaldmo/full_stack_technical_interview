@@ -1,9 +1,10 @@
 const jwt = require('jsonwebtoken')
 const bcrypt = require('bcrypt');
 const UsersDAO = require('../dao/users.dao');
+require('dotenv').config();
 
 
-const SECRET_KEY = process.env.SECRET_KEY;
+const JWT_SECRET = process.env.JWT_SECRET;
 
 /**
  * Controller function to handle retrieving all users.
@@ -56,7 +57,7 @@ async function registerUser(req, res) {
      */
     const accessToken = jwt.sign(
       { user_id: newUser.user_id, email: newUser.email },
-      SECRET_KEY,
+      JWT_SECRET,
       { expiresIn: '15m' }
     );
 
@@ -89,48 +90,32 @@ async function registerUser(req, res) {
 async function loginController(req, res) {
   try {
     const { email, password } = req.body;
-    const user = await UsersDAO.loginUser(email, password);
+    const user = await UsersDAO.getUserByEmailForLogin(email);
 
     if (!user) {
-      return res.status(401).json({
-        error: 'Invalid email or password'
-      });
+      return res.status(401).json({ error: 'Invalid email or password' });
     }
 
-    /** 
-     * Long-lived Access Token
-     */
+    const isPasswordValid = await bcrypt.compare(password, user.password);
+    if (!isPasswordValid) {
+      return res.status(401).json({ error: 'Invalid email or password' });
+    }
+
     const accessToken = jwt.sign(
       { user_id: user.user_id, email: user.email },
-      SECRET_KEY,
-      { expiresIn: '7d' }
+      JWT_SECRET,
+      { expiresIn: '1d' }
     );
 
-    /** 
-     * Short-lived Access Token
-     * (stored in session)
-     */
-    const refreshToken = jwt.sign(
-      { user_id: user.user_id, email: user.email },
-      SECRET_KEY,
-      { expiresIn: '7d' }
-    );
-
-    req.session.refreshToken = refreshToken;
-    req.session.userId = user.user_id;
-
-    /**
-     * Send the token in the response.
-     */
     res.cookie('auth_token', accessToken, {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
       sameSite: 'strict'
     });
 
-    res.json({ message: 'Login successful.', accessToken })
-  } catch (error) {
-    console.error(err);
+    res.json({ message: 'Login successful.', accessToken });
+  } catch (err) {
+    console.error('Login error:', err);
     res.status(500).json({ error: 'Server error' });
   }
 }
@@ -142,9 +127,23 @@ function logoutController(req, res) {
   });
 }
 
+async function getProfile(req, res) {
+  try {
+    const user = await UsersDAO.getUserById(req.user.user_id);
+    if (!user) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+    res.json(user);
+  } catch (err) {
+    console.error('Get profile error:', err);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+}
+
 module.exports = {
   registerUser,
   usersController,
   loginController,
   logoutController,
-}
+  getProfile,
+};

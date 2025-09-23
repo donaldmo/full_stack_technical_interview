@@ -1,0 +1,45 @@
+### Variables
+@hostname = localhost
+@port = 3000
+@host = http://{{hostname}}:{{port}}
+@token = '.eyJ1c2VyX2lkIjoxNSwiZW1haWwiOiJ0ZXN0dXNlcjJAZXhhbXBsZS5jb20iLCJpYXQiOjE3NTg2MjA0MTEsImV4cCI6MTc1ODcwNjgxMX0.b8vW2GZUjCLsqPD5QgRsI8u1xuP5TXowVgSw1DcT1ks'
+
+###
+# Welcome Endpoint
+# This should return a welcome message.
+GET {{host}}/
+
+###
+# All Users Endpoint
+# This should return a list of all users.
+GET {{host}}/api/users
+
+###
+# Register a new user
+# Replace the email and username if you want to register a different user.
+POST {{host}}/api/register
+Content-Type: application/json
+
+{
+    "name": "testuser2",
+    "email": "testuser2@example.com",
+    "password": "password123"
+}
+
+###
+# Login to get the auth token
+# This request is named 'login' so we can reference its response.
+
+POST {{host}}/api/login
+Content-Type: application/json
+
+{
+    "email": "testuser2@example.com",
+    "password": "password123"
+}
+
+###
+# Get User Profile (Bearer Token Auth)
+# This request uses the Authorization header with a Bearer token.
+GET {{host}}/api/profile
+Authorization: Bearer {{token}}

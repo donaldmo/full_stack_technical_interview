@@ -50,17 +50,14 @@ class UsersDAO {
     }
   }
 
-  async loginUser(email, password) {
+  async getUserByEmailForLogin(email) {
     const connection = await getPool().getConnection();
     try {
-      const [rows] = await connection.query(
-        'SELECT * FROM users WHERE email = ? AND password = ?', [email, password]
-      );
-
+      const [rows] = await connection.query('SELECT * FROM users WHERE email = ?', [email]);
       if (rows.length === 0) {
         return null;
       }
-      return UsersRecord.fromRow(rows[0]);
+      return rows[0];
     } catch (err) {
       throw err;
     } finally {
