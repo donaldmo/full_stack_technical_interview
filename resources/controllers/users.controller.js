@@ -1,5 +1,9 @@
 const jwt = require('jsonwebtoken')
+const bcrypt = require('bcrypt');
 const UsersDAO = require('../dao/users.dao');
+
+
+const SECRET_KEY = process.env.SECRET_KEY;
 
 /**
  * Controller function to handle retrieving all users.
@@ -24,44 +28,62 @@ async function usersController(req, res) {
   }
 }
 
-  async function registerUser(req, res) {
+async function registerUser(req, res) {
 
-    try {
-      const { email, password, name } = req.body;
+  try {
+    const { email, password, name } = req.body;
 
-      const existingUser = await UsersDAO.getUserByEmail(email);
-      if (existingUser) {
-        return res.status(400).json({ error: 'User already exists' });
-      }
-
-      /** Hash the password */
-      const hashedPassword = await bcrypt.hash(password, 10);
-
-      /**
-       * Create a new user
-       */
-      const newUser = UsersDAO.createUser({
-        email,
-        password: hashedPassword,
-        name
-      });
-
-      /**
-       * Issue JWT
-       */
-
-
-      /**
-       * Set Session Cookie
-       */
-      
-
-    } catch (err) {
-      throw err;
-    } finally {
-      connection.release();
+    const existingUser = await UsersDAO.getUserByEmail(email);
+    if (existingUser) {
+      return res.status(400).json({ error: 'User already exists' });
     }
+
+    /** Hash the password */
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    /**
+     * Create a new user
+     * Use the hashedaPassword as the password
+     */
+    const newUser = await UsersDAO.createUser({
+      email,
+      password: hashedPassword,
+      name
+    });
+
+    /**
+     * Issue JWT
+     */
+    const accessToken = jwt.sign(
+      { user_id: newUser.user_id, email: newUser.email },
+      SECRET_KEY,
+      { expiresIn: '15m' }
+    );
+
+    /**
+     * Set Session Cookie
+     */
+    res.cookie('auth_token', accessToken, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'strict'
+    });
+
+    res.status(201).json({
+      message: 'User registered successfully',
+      user: {
+        user_id: newUser.user_id,
+        email: newUser.email,
+        name: newUser.name
+      },
+      accessToken
+    });
+
+  } catch (err) {
+    console.error('Register error:', err);
+    res.status(500).json({ error: 'Internal server error' });
   }
+}
 
 
 async function loginController(req, res) {
@@ -98,15 +120,15 @@ async function loginController(req, res) {
     req.session.userId = user.user_id;
 
     /**
-     * Send the token in the response
+     * Send the token in the response.
      */
-    res.cookie('auth_token', token, {
+    res.cookie('auth_token', accessToken, {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
       sameSite: 'strict'
     });
 
-    res.json({ message: 'Login successful.', token })
+    res.json({ message: 'Login successful.', accessToken })
   } catch (error) {
     console.error(err);
     res.status(500).json({ error: 'Server error' });

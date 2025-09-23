@@ -81,11 +81,15 @@ app.get('/', (req, res) => {
 });
 
 // Routes
-app.post('/login', loginController);
-app.post('/logout', logoutController);
+app.post('/api/login', loginController);
+app.post('/api/logout', logoutController);
 
 /** Protected Route */
-app.get('/profile', authenticate)
+app.get('/api/profile', authenticate, () => {
+  res.json({
+    message: 'Welcome to your profile!', user: req.user
+  });
+});
 
 routes(app);
 
