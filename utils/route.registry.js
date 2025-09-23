@@ -1,8 +1,9 @@
 const express = require('express');
 const routeMetadata = [];
 
-function registerRoute(app, { path, method, handler, openapi }) {
-  app[method](path, handler);
+
+function registerRoute(app, { path, method, handler, middleware = [], openapi = {} }) {
+  app[method](path, ...middleware, handler);
   routeMetadata.push({ path, method, ...openapi });
 }
 

@@ -1,40 +1,35 @@
 const { registerRoute } = require("../../utils/route.registry");
 const { registerUser, loginController, getProfile, logoutController } = require("../controllers/users.controller");
 const authenticate = require("../middleware/auth.middleware");
+const { registerOpenAPI, loginOpenAPI, profileOpenAPI, logoutOpenAPI } = require('../openapi/auth.openapi');
 
 module.exports = (app) => {
   registerRoute(app, {
-    path: '/',
-    method: 'get',
-    handler: (req, res) => {
-      res.send('Welcome to the Financial API Server');
-    },
-  });
-
-  registerRoute(app, {
-    path: '/api/register',
+    path: '/api/auth/register',
     method: 'post',
     handler: registerUser,
+    openapi: registerOpenAPI,
   });
 
   registerRoute(app, {
-    path: '/api/login',
+    path: '/api/auth/login',
     method: 'post',
     handler: loginController,
+    openapi: loginOpenAPI,
   });
 
   registerRoute(app, {
-    path: '/api/logout',
+    path: '/api/auth/logout',
     method: 'post',
     handler: logoutController,
+    openapi: logoutOpenAPI,
   });
 
   registerRoute(app, {
-    path: '/api/profile',
+    path: '/api/auth/profile',
     method: 'get',
-    handler: (req, res) => {
-      // The authenticate middleware is called first, and if successful, it calls the getProfile handler.
-      authenticate(req, res, () => getProfile(req, res));
-    },
+    middleware: [authenticate],
+    handler: getProfile,
+    openapi: profileOpenAPI,
   });
 };

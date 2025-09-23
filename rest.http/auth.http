@@ -7,7 +7,7 @@
 ###
 # Welcome Endpoint
 # This should return a welcome message.
-GET {{host}}/
+GET {{host}}/api/
 
 ###
 # All Users Endpoint
@@ -17,7 +17,7 @@ GET {{host}}/api/users
 ###
 # Register a new user
 # Replace the email and username if you want to register a different user.
-POST {{host}}/api/register
+POST {{host}}/api/auth/register
 Content-Type: application/json
 
 {
@@ -30,7 +30,7 @@ Content-Type: application/json
 # Login to get the auth token
 # This request is named 'login' so we can reference its response.
 
-POST {{host}}/api/login
+POST {{host}}/api/auth/login
 Content-Type: application/json
 
 {
@@ -39,13 +39,13 @@ Content-Type: application/json
 }
 
 ###
-# Get User Profile (Bearer Token Auth)
-# This request uses the Authorization header with a Bearer token.
-GET {{host}}/api/profile
-Authorization: Bearer {{token}}
-
-###
 # Logout
 # This request is named 'logout' so we can reference its response.
 
-POST {{host}}/api/logout
+POST {{host}}/api/auth/logout
+
+###
+# Get User Profile (Bearer Token Auth)
+# This request uses the Authorization header with a Bearer token.
+GET {{host}}/api/auth/profile
+Authorization: Bearer {{token}}
