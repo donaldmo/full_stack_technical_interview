@@ -55,6 +55,10 @@ setupSwagger(app);
  */
 routes(app);
 
+app.use('/api', (req, res) => {
+  res.status(404).send('Not Found');
+})
+
 /**
  * --- SERVER ---\n * ----------------------------------------------
  */

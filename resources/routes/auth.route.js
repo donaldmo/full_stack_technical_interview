@@ -1,5 +1,5 @@
 const { registerRoute } = require("../../utils/route.registry");
-const { registerUser, loginController, getProfile } = require("../controllers/users.controller");
+const { registerUser, loginController, getProfile, logoutController } = require("../controllers/users.controller");
 const authenticate = require("../middleware/auth.middleware");
 
 module.exports = (app) => {
@@ -21,6 +21,12 @@ module.exports = (app) => {
     path: '/api/login',
     method: 'post',
     handler: loginController,
+  });
+
+  registerRoute(app, {
+    path: '/api/logout',
+    method: 'post',
+    handler: logoutController,
   });
 
   registerRoute(app, {

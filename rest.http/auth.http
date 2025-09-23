@@ -43,3 +43,9 @@ Content-Type: application/json
 # This request uses the Authorization header with a Bearer token.
 GET {{host}}/api/profile
 Authorization: Bearer {{token}}
+
+###
+# Logout
+# This request is named 'logout' so we can reference its response.
+
+POST {{host}}/api/logout
