@@ -65,12 +65,7 @@ async function uploadExelFile(req, res) {
 
 async function getFinancialRecords(req, res) {
   try {
-    /**
-     * TODO:
-     * change req.query to req.params
-     */
-    const { userId, year } = req.query;
-    console.log('getFinancialRecords', userId, year)
+    const { userId, year } = req.params;
 
     let records;
 
