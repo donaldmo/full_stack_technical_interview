@@ -20,6 +20,8 @@ function getSwaggerSpec() {
         description: route.description,
         operationId: route.operationId,
         parameters: route.parameters,
+        requestBody: route.requestBody,
+        security: route.security,
         responses: route.responses,
       },
     };

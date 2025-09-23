@@ -5,15 +5,6 @@ const authenticate = require('../middleware/auth.middleware');
 
 module.exports = (app) => {
   registerRoute(app, {
-    path: '/api/',
-    method: 'get',
-    handler: (req, res) => {
-      res.status(200).send('Welcome to financial system!');
-    },
-    // openapi: homeOpenapi,
-  })
-
-  registerRoute(app, {
     path: '/api/users',
     method: 'get',
     handler: usersController,

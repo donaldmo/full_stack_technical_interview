@@ -41,33 +41,44 @@ app.use(session({
   cookie: { secure: process.env.NODE_ENV === 'production' }
 }));
 
-/**
- * --- API DOCUMENTATION ---
- * ----------------------------------------------
- */
-setupSwagger(app);
-/**
- * TODO: JSDOC
- */
 
-/**
- * --- ROUTES ---\n * ----------------------------------------------
- */
-routes(app);
-
-app.use('/api', (req, res) => {
-  res.status(404).send('Not Found');
-})
 
 /**
  * --- SERVER ---\n * ----------------------------------------------
  */
-const PORT = process.env.PORT || 3000;
-if (require.main === module) {
-  app.listen(PORT, async () => {
+async function startServer() {
+  try {
+
+    /**
+     * Routes:
+     * uses the custom route registry;
+     * helps document the routes using swagger
+     */
+    routes(app);
+
+    // app.all(/^\/api\/.*/, (req, res) => {
+    //   res.status(404).send('Not Found');
+    // });
+
+    /**
+     * Swagger api Documentation
+     * visit '/api-docs/' to view api docs
+     */
+    setupSwagger(app);
+
+    /**
+     * Setup MySql Connection
+     * edit .env for connection credentials
+     */
     await setup();
 
-    console.log(`Server is running on PORT:${PORT}`);
+    /**
+     *  Server Listener  
+     *  specify the port to listen on
+     */
+    app.listen(process.env.PORT || 3000, () => {
+      console.log(`Server running on port ${process.env.PORT || 3000}`)
+    });
 
     // Graceful shutdown
     process.on('SIGTERM', async () => {
@@ -75,7 +86,15 @@ if (require.main === module) {
       await close();
       process.exit(0);
     });
-  });
+
+  } catch (err) {
+    console.error('Failed to start server due to database setup error:', err);
+    process.exit(1);
+  }
+}
+
+if (require.main === module) {
+  startServer();
 }
 
 /**
