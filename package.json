@@ -27,6 +27,7 @@
     "exceljs": "^4.4.0",
     "express": "^5.1.0",
     "express-session": "^1.18.2",
+    "jsdoc": "^4.0.4",
     "jsonwebtoken": "^9.0.2",
     "multer": "^2.0.2",
     "mysql2": "^3.15.0",
