@@ -4,6 +4,8 @@ This project is a **Node.js + MariaDB** backend for managing users and their fin
 
 ---
 
+## Clone the repo:
+
 ## 📦 Prerequisites
 
 Make sure you have the following installed:
@@ -67,8 +69,8 @@ Make sure you have the following installed:
 1. **Clone the repo**
 
    ```bash
-   git clone https://github.com/your-username/financial-records-api.git
-   cd financial-records-api
+   git clone git@github.com:donaldmo/full_stack_technical_interview.git
+   cd full_stack_technical_interview
    ```
 
 2. **Install dependencies**
