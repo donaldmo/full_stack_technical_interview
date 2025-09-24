@@ -224,6 +224,27 @@ button:active {
     padding: 1.5rem;
     border-radius: 10px;
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    margin-bottom: 2rem;
+}
+
+#finances-chart-container {
+    background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+    padding: 2rem;
+    border-radius: 10px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    max-width: 100%;
+    height: 450px;
+    margin-bottom: 2rem;
+    border: 1px solid #e0e6ed;
+    transition: box-shadow 0.3s ease;
+}
+
+#finances-chart-container:hover {
+    box-shadow: 0 6px 24px rgba(0, 0, 0, 0.15);
+}
+
+#finances-chart {
+    max-height: 100%;
 }
 
 table {
@@ -232,7 +253,8 @@ table {
     font-size: 1rem;
 }
 
-th, td {
+th,
+td {
     padding: 0.75rem;
     text-align: left;
     border-bottom: 1px solid #ddd;
@@ -284,7 +306,12 @@ tr:hover {
         flex-direction: column;
     }
 
-    #file-input, #upload-button {
+    #file-input,
+    #upload-button {
         width: 100%;
+    }
+
+    #finances-chart-container {
+        height: 350px;
     }
 }
