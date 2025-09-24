@@ -2,7 +2,7 @@ const { registerRoute } = require("../../utils/route.registry");
 const authenticate = require("../middleware/auth.middleware");
 const { uploadExelFile, getFinancialRecords } = require('../controllers/finances.controller');
 const upload = require("../middleware/upload.middleware");
-// const financesOpenapi = require('../openapi/finances.openapi');
+const { getFinancialRecordsOpenAPI, uploadExcelOpenAPI } = require('../openapi/finances.openapi');
 
 
 module.exports = (app) => {
@@ -11,7 +11,7 @@ module.exports = (app) => {
     method: 'post',
     middleware: [authenticate, upload.single('file')],
     handler: uploadExelFile,
-    // openapi: ,
+    openapi: uploadExcelOpenAPI,
   })
 
   registerRoute(app, {
@@ -19,6 +19,6 @@ module.exports = (app) => {
     method: 'get',
     middleware: [authenticate],
     handler: getFinancialRecords,
-    // openapi: ,
+    openapi: getFinancialRecordsOpenAPI,
   })
 }
